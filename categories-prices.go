@@ -8,26 +8,26 @@ import (
 	"encoding/json"
 )
 
-type priceType float32
+type PriceType float32
 type CategoryRemoteApi struct {
 	Paging struct {
 		Total int `json:"total"`
 	} `json:"paging"`
 	Results []struct {
-		Price      priceType    `json:"price"`
+		Price      PriceType    `json:"price"`
 	} `json:"results"`
 }
 
-func getPrices(categoryId string)(map[string]priceType){
+func GetPrices(categoryId string)(map[string]PriceType){
 
-	var prices = make(chan priceType,2)
+	var prices = make(chan PriceType,2)
 	defer close(prices)
 	go getMaxPrice(categoryId, prices)
 	go getMinPrice(categoryId, prices)
 
 	count := 0
-	var category = make(map[string]priceType,3)
-	var data []priceType
+	var category = make(map[string]PriceType,3)
+	var data []PriceType
 	for i:= range prices{
 		count++
 
@@ -51,7 +51,7 @@ func getPrices(categoryId string)(map[string]priceType){
 	return category
 }
 
-func getData(categoryId, order string)(priceType){
+func getData(categoryId, order string)(PriceType){
 	apiClient := http.Client{
 		Timeout: time.Second * 10,
 	}
@@ -95,18 +95,18 @@ func getData(categoryId, order string)(priceType){
 	return formatPrice(0.0)
 }
 
-func getMaxPrice(categoryId string, channel chan<- priceType){
+func getMaxPrice(categoryId string, channel chan<- PriceType){
 	channel <- getData(categoryId, "price_desc")
 }
 
-func getMinPrice(categoryId string,channel chan<- priceType){
+func getMinPrice(categoryId string,channel chan<- PriceType){
 	channel <- getData(categoryId, "price_asc")
 }
 
-func getSuggestedPrice(minPrice, maxPrice priceType)(priceType){
+func getSuggestedPrice(minPrice, maxPrice PriceType)(PriceType){
 	return formatPrice((minPrice+maxPrice)/2)
 }
 
-func formatPrice(value priceType)(priceType){
+func formatPrice(value PriceType)(PriceType){
 	return value
 }

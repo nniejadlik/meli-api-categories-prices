@@ -8,12 +8,12 @@ import (
 
 
 func TestGetPrices(t *testing.T){
-	fmt.Print("\ngetPrices\n")
+	fmt.Print("\nGetPrices\n")
 
 	categories := [8]string{"MLA1234","MLA1235","MLA123","12345","MLA109291","MLA5725","MLA4711","MLA6520"}
 
 	for _,i:= range categories{
-		prices := getPrices(i)
+		prices := GetPrices(i)
 		fmt.Println(i,prices)
 	}
 }
@@ -43,7 +43,7 @@ func TestGetData(t *testing.T) {
 func TestGetMaxPrice(t *testing.T){
 	fmt.Print("\ngetMaxPrice\n")
 
-	var prices = make(chan priceType,2)
+	var prices = make(chan PriceType,2)
 	categories := [8]string{"MLA1234","MLA1235","MLA123","12345","MLA109291","MLA5725","MLA4711","MLA6520"}
 
 	for _,i:= range categories{
@@ -65,7 +65,7 @@ func TestGetMaxPrice(t *testing.T){
 
 func TestGetMinPrice(t *testing.T){
 	fmt.Print("\ngetMinPrice\n")
-	var prices = make(chan priceType,2)
+	var prices = make(chan PriceType,2)
 	categories := [8]string{"MLA1234","MLA1235","MLA123","12345","MLA109291","MLA5725","MLA4711","MLA6520"}
 
 	for _,i:= range categories{
@@ -89,7 +89,7 @@ func TestGetSuggestedPrice(t *testing.T){
 	fmt.Print("\ngetSuggestedPrice\n")
 
 	for i:=0; i<10; i++{
-		var x,y priceType = priceType(rand.Float32()), priceType(rand.Float32())
+		var x,y PriceType = PriceType(rand.Float32()), PriceType(rand.Float32())
 		price := getSuggestedPrice(x,y)
 		fmt.Printf("Value between %v and %v is %v\n",x,y, price)
 	}
@@ -98,7 +98,7 @@ func TestGetSuggestedPrice(t *testing.T){
 
 func TestFormatPrice(t *testing.T){
 	fmt.Print("\nformatPrice\n")
-	prices := [8]priceType{0.0,1.5,6,98.98,9090,7,98.098,76}
+	prices := [8]PriceType{0.0,1.5,6,98.98,9090,7,98.098,76}
 
 	for _,i:= range prices{
 		price := formatPrice(i)
@@ -115,7 +115,7 @@ func BenchmarkGetPrices(b *testing.B){
 	fmt.Print("\nBenchmarGetPrices\n")
 
 	for i := 0; i < b.N; i++ {
-		prices := getPrices(category)
+		prices := GetPrices(category)
 		fmt.Printf("The prices for %s is %v\n",category,prices)
 	}
 
@@ -125,7 +125,7 @@ func BenchmarkGetPrices(b *testing.B){
 	b.RunParallel(
 		func(pb *testing.PB) {
 			for pb.Next() {
-				prices := getPrices(category)
+				prices := GetPrices(category)
 				fmt.Printf("[Parallel] The prices for %s is %v\n",category,prices)
 			}
 		})
