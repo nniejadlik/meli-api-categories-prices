@@ -10,11 +10,31 @@ import (
 func TestGetPrices(t *testing.T){
 	fmt.Print("\nGetPrices\n")
 
-	categories := [8]string{"MLA1234","MLA1235","MLA123","12345","MLA109291","MLA5725","MLA4711","MLA6520"}
+	categories := map[string]map[string]PriceType{
+		"MLA1234":{"max":0.0,"suggested":0.0,"min":0.0},
+		"MLA1235":{"max":0.0,"suggested":0.0,"min":0.0},
+		"MLA123":{"max":0.0,"suggested":0.0,"min":0.0},
+		"12345":{"max":0.0,"suggested":0.0,"min":0.0},
+		"MLA109291":{"max":50000,"suggested":25000.5,"min":1},
+		"MLA5725":{"max":1e+10,"suggested":5e+09,"min":1},
+		"MLA4711":{"max":1.1111111e+08,"suggested":5.5555556e+07,"min":1},
+		"MLA6520":{"max":1e+10,"suggested":5e+09,"min":1},
+		}
 
-	for _,i:= range categories{
-		prices := GetPrices(i)
-		fmt.Println(i,prices)
+	for k,i:= range categories{
+		prices := GetPrices(k)
+
+		if prices["max"] != i["max"]{
+			t.Error(fmt.Sprintf("Expected the max price %v for category %s  but instead got %v", i["max"], k, prices["max"] ))
+		}
+
+		if prices["min"] != i["min"]{
+			t.Error(fmt.Sprintf("Expected the min price %v for category %s  but instead got %v", i["min"], k, prices["min"] ))
+		}
+
+		if prices["suggested"] != i["suggested"]{
+			t.Error(fmt.Sprintf("Expected the suggested price %v for category %s  but instead got %v", i["suggested"], k, prices["suggested"] ))
+		}
 	}
 }
 
@@ -22,20 +42,29 @@ func TestGetPrices(t *testing.T){
 func TestGetData(t *testing.T) {
 	fmt.Print("\ngetData\n")
 
-	categories := make(map[string]string)
-	categories["MLA1234"] = "price_asc"
-	categories["MLA1235"] = "price_desc"
-	categories["MLA123"] = "price_asc"
-	categories["12345"] = "price_desc"
-	categories["MLA109291"] = "price_asc"
-	categories["MLA5725"] = "price_desc"
-	categories["MLA4711"] = "price_asc"
-	categories["MLA6520"] = "price_desc"
+	categories := []struct {
+		id string
+        data struct {
+        	price PriceType
+			order string
+		}
+    }{
+    	{"MLA1234", {0.0, "price_asc"}},
+		{"MLA1235",{0.0, "price_desc"}},
+		{"MLA123",{0.0, "price_asc"}},
+		{"12345",{0.0, "price_desc"}},
+		{"MLA109291",{1, "price_asc"}},
+		{"MLA5725",{1e+10, "price_desc"}},
+		{"MLA4711",{1, "price_asc"}},
+		{"MLA6520",{1e+10, "price_desc"}},
+	}
 
 
-	for k,i := range categories {
-		price := getData(k, i)
-		fmt.Println(k,i,price)
+	for category := range categories {
+		price := getData(category["id"], category["data"]["order"])
+		if price != PriceType(category["data"]["price"]){
+			t.Error(fmt.Sprintf("Expected the price %v for category %s  but instead got %v", category["data"]["price"], category["id"], price ))
+		}
 	}
 }
 
@@ -85,8 +114,8 @@ func TestGetMinPrice(t *testing.T){
 }
 
 
-func TestGetSuggestedPrice(t *testing.T){
-	fmt.Print("\ngetSuggestedPrice\n")
+func TestGetsuggestedPrice(t *testing.T){
+	fmt.Print("\ngetsuggestedPrice\n")
 
 	for i:=0; i<10; i++{
 		var x,y PriceType = PriceType(rand.Float32()), PriceType(rand.Float32())
