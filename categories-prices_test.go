@@ -42,7 +42,7 @@ func TestGetData(t *testing.T) {
 
 func TestGetMaxPrice(t *testing.T){
 
-	var prices = make(chan PriceType,2)
+	var prices = make(chan float64,2)
 
 
 	for _,i:= range Categories{
@@ -66,7 +66,7 @@ func TestGetMaxPrice(t *testing.T){
 
 
 func TestGetMinPrice(t *testing.T){
-	var prices = make(chan PriceType,2)
+	var prices = make(chan float64,2)
 	categories := [8]string{"MLA1234","MLA1235","MLA123","12345","MLA109291","MLA5725","MLA4711","MLA6520"}
 
 	for _,i:= range categories{
@@ -91,7 +91,7 @@ func TestGetMinPrice(t *testing.T){
 func TestGetsuggestedPrice(t *testing.T){
 
 	for i:=0; i<10; i++{
-		var x,y PriceType = PriceType(rand.Float32()), PriceType(rand.Float32())
+		var x,y float64 = rand.Float64(), rand.Float64()
 		price := getSuggestedPrice(x,y)
 
 		if !(price >= 0){
@@ -102,7 +102,7 @@ func TestGetsuggestedPrice(t *testing.T){
 
 
 func TestFormatPrice(t *testing.T){
-	prices := [8]PriceType{0.0,1.5,6,98.98,9090,7,98.098,76}
+	prices := [8]float64{0.0,1.5,6,98.98,9090,7,98.098,76}
 
 	for _,i:= range prices{
 		price := formatPrice(i)
