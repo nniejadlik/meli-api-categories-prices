@@ -113,5 +113,5 @@ func round(num float64) int {
 
 func formatPrice(value float64)(float64){
 	output := math.Pow(10, float64(2))
-	return float64(round(num * output)) / output
+	return float64(round(value * output)) / output
 }
